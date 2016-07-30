@@ -12,9 +12,11 @@ using System;
 
 public class Game : MonoBehaviour
 {
-    #region 公共字段
-    public GameUI gameUI;
+    #region 公共字段 
     public Bird bird;
+    public GameUI gameUI;
+    public BackGround backGround;
+    public InputController inputController;
     #endregion
 
     #region 单例
@@ -22,10 +24,7 @@ public class Game : MonoBehaviour
 
     public static Game _i
     {
-        get
-        {
-            return Instance;
-        }
+        get { return Instance; }
     }
 
     void Awake()
@@ -34,16 +33,12 @@ public class Game : MonoBehaviour
     }
     #endregion
 
-    #region 私有字段  游戏状态
+    #region 私有字段-游戏状态
     private GameState state = GameState.Init;
 
     public GameState gameState
     {
-        get
-        {
-            return state;
-        }
-
+        get { return state; }
         private set
         {
             state = value;
@@ -62,9 +57,22 @@ public class Game : MonoBehaviour
     #region Start---事件---初始化
     public void Start()
     {
-        OnGameState += Game_OnGameState;//监听事件
+        OnGameState += Game_OnGameState;//游戏状态监听事件
+
+        inputController.OnTab += InputController_OnTab;//控制监听事件
 
         GotoInit();//初始化Init
+    }
+
+    private void InputController_OnTab()
+    {
+        if (this.gameState == GameState.Ready)
+        {
+            GotoPlay();
+        }
+
+        //点了以后先来跳一下
+        bird.Jump();
     }
 
     private void Game_OnGameState(GameState obj)
@@ -72,24 +80,32 @@ public class Game : MonoBehaviour
         switch (state)
         {
             case GameState.Init:
+                inputController.Enable = false;
                 bird.IsVisible = false;
-                gameUI.UpdateUI(state);
+                bird.UseGravity = false;
+                backGround.ShowBG();
                 break;
             case GameState.Ready:
+                inputController.Enable = true;
                 bird.IsVisible = true;
-                gameUI.UpdateUI(state);
+                bird.UseGravity = false;
+                backGround.ShowBG();
                 break;
             case GameState.Play:
+                inputController.Enable = true;
                 bird.IsVisible = true;
-                gameUI.UpdateUI(state);
+                bird.UseGravity = true;
                 break;
             case GameState.Over:
+                inputController.Enable = false;
                 bird.IsVisible = false;
-                gameUI.UpdateUI(state);
+                bird.UseGravity = true;
                 break;
             default:
                 break;
         }
+
+        gameUI.UpdateUI(state);
     }
     #endregion
 
