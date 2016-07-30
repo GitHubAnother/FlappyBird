@@ -46,7 +46,6 @@ public class Bird : MonoBehaviour
         r2d = this.GetComponent<Rigidbody2D>();
         anim = this.GetComponent<Animator>();
 
-        //OnHit += Bird_OnHit;
         OnDead += Bird_OnDead;
     }
     #endregion
@@ -62,6 +61,7 @@ public class Bird : MonoBehaviour
     }
     public void Reset()//重置小鸟位置，关闭重力，播放动画
     {
+        r2d.velocity = Vector3.zero;
         this.transform.position = defaultPosition;
         UseGravity = false;
         anim.enabled = true;
@@ -75,9 +75,38 @@ public class Bird : MonoBehaviour
     }
     #endregion
 
+    //碰撞检测
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        Sound._i.Play("sfx_hit");
+
+        if (Game._i.gameState == GameState.Play)
+        {
+            if (collision.gameObject.name == "Land" || collision.gameObject.name == "PipeUp" || collision.gameObject.name == "PipeDown")
+            {
+                if (OnDead != null)
+                {
+                    OnDead();
+                }
+            }
+        }
+
+    }
+
     //触发检测
     void OnTriggerEnter2D(Collider2D collision)
     {
+        if (Game._i.gameState != GameState.Play)
+        {
+            return;
+        }
 
+        if (collision.gameObject.name == "Gap")
+        {
+            if (OnHit != null)
+            {
+                OnHit();
+            }
+        }
     }
 }

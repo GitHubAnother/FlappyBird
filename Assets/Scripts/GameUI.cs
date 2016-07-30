@@ -8,9 +8,14 @@
 
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
+    #region 奖牌图片数组
+    public Sprite[] medals;
+    #endregion
+
     #region 私有字段 Awke赋值
     private GameObject _Logo;
     private GameObject _Start;
@@ -19,9 +24,13 @@ public class GameUI : MonoBehaviour
     private GameObject _Tutorial;
     private GameObject _Score;
     private GameObject _Over;
+    private GameObject _New;
+    private Text _PanelScore;
+    private Text _PanelBest;
+    private Image _PanelMedal;
     #endregion
 
-    #region Unity内置函数
+    #region Awake赋值
     void Awake()
     {
         _Logo = this.transform.FindChild("Logo").gameObject;
@@ -31,10 +40,14 @@ public class GameUI : MonoBehaviour
         _Tutorial = this.transform.FindChild("Tutorial").gameObject;
         _Score = this.transform.FindChild("Score").gameObject;
         _Over = this.transform.FindChild("Over").gameObject;
+        _New = _Over.transform.Find("Panel/New").gameObject;
+        _PanelScore = _Over.transform.Find("Panel/Score").GetComponent<Text>();
+        _PanelBest = _Over.transform.Find("Panel/Best").GetComponent<Text>();
+        _PanelMedal = _Over.transform.Find("Panel/Medal").GetComponent<Image>();
     }
     #endregion
 
-    #region 更新UI的方法
+    #region 更新UI的方法---外调
     public void UpdateUI(GameState state)
     {
         switch (state)
@@ -54,6 +67,52 @@ public class GameUI : MonoBehaviour
             default:
                 break;
         }
+    }
+    #endregion
+
+    #region 更新分数的方法---外调
+    public void UpdateScore(int score)
+    {
+        _Score.GetComponent<Text>().text = score.ToString();
+    }
+    #endregion
+
+    #region 更新分数和奖牌图片
+    public void UpdateResult(int score, int best, bool newScore)
+    {
+        _New.SetActive(newScore);
+
+        _PanelScore.text = score.ToString();
+        _PanelBest.text = best.ToString();
+
+        Sprite m = null;
+
+        if (score < 66)
+        {
+            m = medals[0];
+        }
+        else if (score >= 66 && score < 666)
+        {
+            m = medals[1];
+        }
+        else if (score >= 666 && score < 666666)
+        {
+            m = medals[2];
+        }
+        else
+        {
+            m = medals[3];
+        }
+
+        _PanelMedal.sprite = m;
+
+        iTween.MoveFrom(
+            _Over,
+            iTween.Hash(
+           "y", -300,
+           "easyType", iTween.EaseType.easeOutExpo,
+           "loopType", iTween.LoopType.none,
+           "time", 0.3f));
     }
     #endregion
 
