@@ -7,7 +7,6 @@
 */
 
 using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
@@ -33,13 +32,13 @@ public class GameUI : MonoBehaviour
     #region Awake赋值
     void Awake()
     {
-        _Logo = this.transform.FindChild("Logo").gameObject;
-        _Start = this.transform.FindChild("Start").gameObject;
-        _Ladder = this.transform.FindChild("Ladder").gameObject;
-        _Ready = this.transform.FindChild("Ready").gameObject;
-        _Tutorial = this.transform.FindChild("Tutorial").gameObject;
-        _Score = this.transform.FindChild("Score").gameObject;
-        _Over = this.transform.FindChild("Over").gameObject;
+        _Logo = this.transform.Find("Logo").gameObject;
+        _Start = this.transform.Find("Start").gameObject;
+        _Ladder = this.transform.Find("Ladder").gameObject;
+        _Ready = this.transform.Find("Ready").gameObject;
+        _Tutorial = this.transform.Find("Tutorial").gameObject;
+        _Score = this.transform.Find("Score").gameObject;
+        _Over = this.transform.Find("Over").gameObject;
         _New = _Over.transform.Find("Panel/New").gameObject;
         _PanelScore = _Over.transform.Find("Panel/Score").GetComponent<Text>();
         _PanelBest = _Over.transform.Find("Panel/Best").GetComponent<Text>();

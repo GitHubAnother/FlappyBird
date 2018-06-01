@@ -6,9 +6,6 @@
 建立时间:2016.7.29.19.33
 */
 
-using UnityEngine;
-using System.Collections;
-
 public enum GameState
 {
     Init,//初始化
